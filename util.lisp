@@ -68,6 +68,3 @@
       `(progn
          (setf (fdefinition ',name-args)
                ,(car body)))))
-
-
-(multiple-value-list (values 3 3 3))

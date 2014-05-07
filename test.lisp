@@ -15,7 +15,7 @@
            (destructuring-bind (test => res &rest ignore)
                                tests
              (declare (ignore => ignore))
-             (cons `(TEST ,(gensym)
+             (cons `(5am:TEST ,(gensym)
                       (IS (EQUALP ,test ,res )))
                    es ))))
       ((endp tests)

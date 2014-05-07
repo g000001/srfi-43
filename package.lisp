@@ -23,6 +23,7 @@
   (:shadow :lambda
            :check-type
            :loop
-           :vector))
+           :vector)
+  (:shadow :test))
 
 ;;; eof
