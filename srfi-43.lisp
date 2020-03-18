@@ -1,6 +1,6 @@
 ;;;; srfi-43.lisp
 
-(cl:in-package :srfi-43.internal)
+(cl:in-package "https://github.com/g000001/srfi-43#internals")
 
 
 ;;;;;; SRFI 43: Vector library                           -*- Scheme -*-

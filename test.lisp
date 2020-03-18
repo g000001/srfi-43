@@ -1,11 +1,12 @@
-(cl:in-package :srfi-43.internal)
+(cl:in-package "https://github.com/g000001/srfi-43#internals")
 
-(def-suite srfi-43)
 
-(in-suite srfi-43)
+(def-suite* srfi-43)
+
 
 (defmacro λ (args &rest body)
   `(lambda ,args ,@body))
+
 
 (defmacro dotests (&body body)
   (do ((*gensym-counter* 0)
@@ -120,6 +121,7 @@
   => t
   )
 
+
 (dotests
   ;; Selectors
   (vector-ref '#(a b c d) 2)
@@ -128,6 +130,7 @@
   (vector-length '#(a b c))
   =>  3
   )
+
 
 (dotests
   ;; Iteration
@@ -172,6 +175,7 @@ zot
   =>  2
   )
 
+
 (dotests
   ;; Searching
   (vector-index #'evenp '#(3 1 4 1 5 9))
@@ -187,8 +191,11 @@ zot
   =>  2
   )
 
+
 #|(dotests
   ;; Mutators
   )|#
 
-;;; eof
+
+;;; *EOF*
+

@@ -2,7 +2,14 @@
 
 (cl:in-package :asdf)
 
+
 (defsystem :srfi-43
+  :version "20200319"
+  :description "SRFI 43 for CL: Vector library"
+  :long-description "SRFI 43 for CL: Vector library
+https://srfi.schemers.org/srfi-43"
+  :author "Taylor Campbell"
+  :maintainer "CHIBA Masaomi"
   :serial t
   :depends-on (:fiveam :mbe :srfi-5 :srfi-23 :srfi-8)
   :components ((:file "package")
@@ -10,11 +17,28 @@
                (:file "srfi-43")
                (:file "test")))
 
+
+(defmethod perform :after ((o load-op) (c (eql (find-system :srfi-43))))
+  (let ((name "https://github.com/g000001/srfi-43")
+        (nickname :srfi-43))
+    (if (and (find-package nickname)
+             (not (eq (find-package nickname)
+                      (find-package name))))
+        (warn "~A: A package with name ~A already exists." name nickname)
+        (rename-package name name `(,nickname)))))
+
+
 (defmethod perform ((o test-op) (c (eql (find-system :srfi-43))))
-  (load-system :srfi-43)
-  (or (flet ((_ (pkg sym)
-               (intern (symbol-name sym) (find-package pkg))))
-         (let ((result (funcall (_ :fiveam :run) (_ :srfi-43.internal :srfi-43))))
-           (funcall (_ :fiveam :explain!) result)
-           (funcall (_ :fiveam :results-status) result)))
-      (error "test-op failed") ))
+  (let ((*package*
+         (find-package
+          "https://github.com/g000001/srfi-43#internals")))
+    (eval
+     (read-from-string
+      "
+      (or (let ((result (run 'srfi-43)))
+            (explain! result)
+            (results-status result))
+          (error \"test-op failed\") )"))))
+
+
+;;; *EOF*

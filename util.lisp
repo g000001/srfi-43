@@ -1,6 +1,13 @@
-(cl:in-package :srfi-43.internal)
+(cl:in-package "https://github.com/g000001/srfi-43#internals")
 
-(progn
+
+(defmacro define.inline.function (name (&rest args) &body body)
+  `(progn
+     (declaim (inline ,name))
+     (defun ,name (,@args) ,@body)))
+
+
+(eval-when (:compile-toplevel :load-toplevel :execute)
   (setf (fdefinition 'eq?) #'eq)
   (setf (fdefinition 'integer?) #'integerp)
   (setf (fdefinition 'list?) #'listp)
@@ -12,15 +19,16 @@
   (setf (fdefinition 'vector-ref) #'aref)
   (setf (fdefinition 'vector-length) #'length)
   (setf (fdefinition 'vector?) #'vectorp)
-  (setf (fdefinition 'procedure?) #'functionp)
-  )
+  (setf (fdefinition 'procedure?) #'functionp))
 
-(declaim (inline list-tail vector-set!))
-(defun list-tail (list k)
+
+(define.inline.function list-tail (list k)
   (nthcdr k list))
 
-(defun vector-set! (vec index val)
+
+(define.inline.function vector-set! (vec index val)
   (setf (aref vec index) val))
+
 
 (defun to-proper-lambda-list (list)
   (typecase list
@@ -33,15 +41,11 @@
                     ,(cdr last)))))
     (symbol `(cl:&rest ,list))))
 
+
 (defmacro lambda (args &rest body)
   `(cl:lambda ,(to-proper-lambda-list args)
      ,@body))
 
-(defmacro define-function (name-args &body body)
-  (destructuring-bind (name . args)
-                      name-args
-    `(defun ,name ,(to-proper-lambda-list args)
-       ,@body)))
 
 (defmacro letrec ((&rest binds) &body body)
   `(let (,@(mapcar (cl:lambda (x)
@@ -65,6 +69,9 @@
                           name-args
         `(defun ,name ,(to-proper-lambda-list args)
            ,@body))
-      `(progn
+      `(eval-when (:compile-toplevel :load-toplevel :execute)
          (setf (fdefinition ',name-args)
                ,(car body)))))
+
+
+;;; *EOF*
